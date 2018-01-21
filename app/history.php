@@ -8,5 +8,5 @@ class history extends Model
 {
     protected $table = 'history';
     
-    protected $fillable = ['userid','postid','type','status','content','updated_at','me','dachay','tong','uid'];
+    protected $fillable = ['userid','postid','action','status','content','updated_at','me','dachay','tong','uid','type','comment'];
 }

@@ -14,6 +14,7 @@ use App\Review;
 use App\history;
 use Carbon\Carbon;
 use App\User;
+use App\history_buy_vip;
 
 
 class ApiController extends Controller
@@ -30,18 +31,14 @@ class ApiController extends Controller
             'money'=>number_format(auth::user()->money).' VNĐ',
             'level'=>auth::user()->level,
             'status'=>auth::user()->status,
-            'avatar'=>auth::user()->avatar
+            'avatar'=>auth::user()->avatar,
+            'access_token'=>auth::user()->access_token
         ],200);
     }
     public function install(Request $request){
-        if(auth::user()->money < 10000){
+        $tinhtien = $request->package * $request->price * ($request->time / 10);
+        if(auth::user()->money < $tinhtien){
             return \response()->json(['success'=>'false','message'=>'Bạn không đủ tiền để thanh toán!'],200);
-        }
-        
-        if($request->uid == ''){
-            return \response()->json(['success'=>'false','message'=>'Vui lòng nhập UID'],200);
-        }else if($request->type == ''){
-            return \response()->json(['success'=>'false','message'=>'Vui lòng chọn loại cảm xúc'],200);
         }
         $check = Vip::where('uid',$request->uid)->where('action',$request->action)->first();
 
@@ -54,90 +51,68 @@ class ApiController extends Controller
             $time = $request->time;
         }
         $create = Vip::create([
-                    'uid' => $request->uid,
+                    'userid' => auth::user()->id != '' ? auth::user()->id : '',
+                    'uid' => $request->uid != '' ? $request->uid : '',
+                    'postid' => $request->postid != '' ? $request->uid : '',
+                    'price' => $tinhtien ,
                     'action' => $request->action,
-                    'time' => $time,
-                    'price' => $request->package * 1000 * ($request->time / 15) ,
-                    'user_id' => auth::user()->id
+                    'type' => json_encode($request->type),
+                    'comment' => $request->comment != '' ? $request->comment : '',
+                    'limit' => $request->package,
+                    'time' => $request->time != '' ? $request->time : '',
+                    'rate' => $request->rate != '' ? $request->rate : '0',
                 ]);
-        
-        
+
         if($create){
-            if($request->action == 'like'){
-            $create = Viplike::create([
+            User::where('id',auth::user()->id)->update(['money'=>auth::user()->money - $tinhtien]);
+            history_buy_vip::create([
+                'userid' => auth::user()->id,
+                'money' => $tinhtien,
                 'vipid' => $create->id,
-                'limit' => $request->package,
-                'type' => json_encode($request->type),
-                'speed' => $request->speed
+                'time' => $request->time != '' ? $request->time : ''
             ]);
-            User::where('id',auth::user()->id)->update(['money' => auth::user()->money - 10000 ]);
-            return \response()->json(['success'=>'true','message'=>'Chúc mừng bạn đã thanh toán thành công'],200);
-            }
-            if($request->action == 'comment'){
-            $create = Vipcomment::create([
-                'vipid' => $create->id,
-                'limit' => $request->package,
-                'speed' => $request->speed,
-                'content' => $request->content
+            return response()->json([
+                'success' => 'true',
+                'message' => 'Chúc mừng bạn đã thanh toán thành công!'
             ]);
-            User::where('id',auth::user()->id)->update(['money' => auth::user()->money - 10000 ]);
-            return \response()->json(['success'=>'true','message'=>'Chúc mừng bạn đã thanh toán thành công'],200);
-            }
-            if($request->action == 'share'){
-            $create = Share::create([
-                'vipid' => $create->id,
-                'limit' => $request->package,
-                'speed' => $request->speed
+        }else{
+            return response()->json([
+                'success' => 'false',
+                'message' => 'Có lỗi xảy ra. Thanh toán không thành công!'
             ]);
-            User::where('id',auth::user()->id)->update(['money' => auth::user()->money - 10000 ]);
-            return \response()->json(['success'=>'true','message'=>'Chúc mừng bạn đã thanh toán thành công'],200);
-            }
-            if($request->action == 'review'){
-            $create = Review::create([
-                'vipid' => $create->id,
-                'limit' => $request->package,
-                'content' => $request->content,
-                'rate' => $request->rate
-            ]);
-            User::where('id',auth::user()->id)->update(['money' => auth::user()->money - 10000 ]);
-            return \response()->json(['success'=>'true','message'=>'Chúc mừng bạn đã thanh toán thành công'],200);
-            }
-            if($request->action == 'follow'){
-            $create = Follow::create([
-                'vipid' => $create->id,
-                'limit' => $request->package
-            ]);
-            User::where('id',auth::user()->id)->update(['money' => auth::user()->money - 10000 ]);
-            return \response()->json(['success'=>'true','message'=>'Chúc mừng bạn đã thanh toán thành công'],200);
-            }
         }
     }
     public function getViplikeID(){
         $action = Input::get('action');
         if($action == 'like'){
-            $vipid = Vip::select('vip.uid','viplike.limit','vip.time','vip.active','viplike.type','viplike.speed')->where('user_id',auth::user()->id)->where('action',Input::get('action'))->join('viplike', 'vip.id', '=', 'viplike.vipid')->paginate(10);
+            $vipid = Vip::select('limit','uid','time')->where('userid',auth::user()->id)->where('action',Input::get('action'))->paginate(10);
             return \response()->json($vipid);
         }
         if($action == 'comment'){
-            $vipid = Vip::select('vip.uid','vipcomment.limit','vip.time','vip.active','vipcomment.content','vipcomment.speed')->where('user_id',auth::user()->id)->where('action',Input::get('action'))->join('vipcomment', 'vip.id', '=', 'vipcomment.vipid')->paginate(10);
+            $vipid = Vip::select('limit','uid','time')->where('userid',auth::user()->id)->where('action',Input::get('action'))->paginate(10);
             return \response()->json($vipid);
         }
         if($action == 'share'){
-            $vipid = Vip::select('vip.uid','vipshare.limit','vip.time','vip.active','vipshare.speed')->where('user_id',auth::user()->id)->where('action',Input::get('action'))->join('vipshare', 'vip.id', '=', 'vipshare.vipid')->paginate(10);
+            $vipid = Vip::select('')->where('userid',auth::user()->id)->where('action',Input::get('action'))->join('vipshare', 'vip.id', '=', 'vipshare.vipid')->paginate(10);
             return \response()->json($vipid);
         }
         if($action == 'review'){
-            $vipid = Vip::select('vip.uid','review.limit','vip.time','vip.active','review.content','review.rate')->where('user_id',auth::user()->id)->where('action',Input::get('action'))->join('review', 'vip.id', '=', 'review.vipid')->paginate(10);
+            $vipid = Vip::select('')->where('userid',auth::user()->id)->where('action',Input::get('action'))->join('review', 'vip.id', '=', 'review.vipid')->paginate(10);
             return \response()->json($vipid);
         }
         if($action == 'follow'){
-            $vipid = Vip::select('vip.uid','follow.limit','vip.time','vip.active','follow.dachay','follow.no')->where('user_id',auth::user()->id)->where('action',Input::get('action'))->join('follow', 'vip.id', '=', 'follow.vipid')->paginate(10);
+            $vipid = Vip::select('')->where('userid',auth::user()->id)->where('action',Input::get('action'))->join('follow', 'vip.id', '=', 'follow.vipid')->paginate(10);
             return \response()->json($vipid);
         }
     }
     
     public function history(){
-        $his = history::where('me','0')->where('userid',auth::user()->id)->orderBy('created_at','DESC')->get();
+        $id = Input::get('id');
+        if(!$id){
+            $his = history::where('me','0')->where('userid',auth::user()->id)->orderBy('created_at','DESC')->get();
+        }else{
+            $his = history::select('postid','content')->where('me',$id)->where('userid',auth::user()->id)->orderBy('created_at','DESC')->get();
+        }
         return \response()->json($his);
     }
 

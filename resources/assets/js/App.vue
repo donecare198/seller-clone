@@ -48,10 +48,10 @@ export default {
             this.speed = $('#speed').val();
             this.time = $('#time').val();
             this.action = $('#action').val();
-            this.content = $('#content').val();
+            this.comment = $('#comment').val();
             this.rate = $('#rate').val();
             this.token = $('meta[name="csrf-token"]').attr('content');
-            
+            this.price = $('#price').val();
             if(this.uid == ''){
                     toastr.error("Vui lòng nhập UID!");
                     return false;
@@ -74,7 +74,7 @@ export default {
                 }
             }
             if(this.action == 'comment'){
-                if(this.content == ''){
+                if(this.comment == ''){
                     toastr.error("Vui lòng nhập nội dung comment!");
                     return false;
                 }
@@ -84,8 +84,8 @@ export default {
                     'uid':this.uid,
                     'type':this.type,
                     'package':this.package,
-                    'content':this.content,
-                    'speed':this.speed,
+                    'comment':this.comment,
+                    'price':this.price,
                     'time':this.time,
                     'rate':this.rate,
                     'action':this.action,
@@ -100,8 +100,19 @@ export default {
         },
         tinhtien: function(){
             this.package = $('#package').val();
+            this.price = $('#price').val();
             this.time = $('#time').val();
-            $('#thanhtien').val(this.package * 1000 * (this.time / 15));
+            $('#thanhtien').val(this.package * this.price * (this.time / 10));
+        },
+        checkuid: function(){
+            this.uid = $('#uid').val();
+            axios.get('https://graph.facebook.com/'+this.uid+'?access_token='+this.info.access_token).then((response) => {
+                $('#uid').css('border','1px solid #ccc');
+                $('#message_uid').html('<span class="success">UID: '+response.data.id+'</span><br /><span class="success">Name: '+response.data.name+'</span>');
+            }).catch((error) => {
+                $('#message_uid').html('<span class="error">UID bạn nhập không hợp lệ<br />'+error.response.data.error.message+'</span>');
+                $('#uid').css('border','1px solid red');
+            })
         }
     },
     mounted() {

@@ -10,10 +10,16 @@ class Vip extends Model
     
     
     protected $fillable = [
+         'userid',
          'uid',
-         'action',
+         'postid',
          'price',
+         'action',
+         'type',
+         'comment',
+         'limit',
          'time',
-         'user_id',
+         'rate',
+         'updated_at'
     ];
 }

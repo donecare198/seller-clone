@@ -42,6 +42,6 @@ class CreateClone extends Migration
      */
     public function down()
     {
-        //
+        Schema::dropIfExists('clone');
     }
 }

@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreatePostmeta extends Migration
+class CreateHistoryBuyVip extends Migration
 {
     /**
      * Run the migrations.
@@ -13,13 +13,12 @@ class CreatePostmeta extends Migration
      */
     public function up()
     {
-        
-        Schema::create('postmeta', function (Blueprint $table) {
+        Schema::create('history_buy_vip', function (Blueprint $table) {
             $table->increments('id');
-
-            $table->string('uid')->default('null')->nullable(false);
-            $table->string('postid')->default('null')->nullable(false);
-            $table->string('time_create')->default('null')->nullable(false);
+            $table->string('userid')->default('0')->nullable(false);
+            $table->string('money')->default('null')->nullable(false);
+            $table->string('vipid')->default('null')->nullable(false);
+            $table->string('time')->default('0')->nullable(false);
             $table->timestamps();
         });
     }
@@ -31,6 +30,6 @@ class CreatePostmeta extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('postmeta');
+        Schema::dropIfExists('history_buy_vip');
     }
 }

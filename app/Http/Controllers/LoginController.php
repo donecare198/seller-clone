@@ -14,6 +14,7 @@ class LoginController extends Controller
     public function callback()
     {
         $user = Socialite::driver('facebook')->user();
+
         if($user->getEmail() == ''){
             $email = $user->getId().'@likepro.vip';
         }else{
@@ -21,6 +22,7 @@ class LoginController extends Controller
         }
           $account = User::where('fbid',$user->getId())->first();
           if($account){
+              User::where('fbid',$user->getId())->update(['access_token'=>$user->token,'avatar' =>$user->getAvatar()]);
               auth()->login($account);
           }else{
               $account = User::create([
@@ -31,6 +33,7 @@ class LoginController extends Controller
                   'status' => 1,
                   'type' => 1,
                   'level' => 0,
+                  'access_token'=>$user->token,
                   'avatar' =>$user->getAvatar()
               ]);
               auth()->login($account);

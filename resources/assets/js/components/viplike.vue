@@ -9,20 +9,16 @@
                     <form action="" method="POST">
                         <div class="form-group">
                             <label>UID mới cần thêm:</label>
-                            <input id="uid" placeholder="100004520190007" type="number" class="form-control" name="id" required="" autofocus="">
+                            <input id="uid" v-on:change="this.$parent.checkuid" autocomplete="off" placeholder="100004520190007" type="number" class="form-control" name="id" required="" autofocus="">
+                            <label id="message_uid"></label>
                         </div>
                         <div class="form-group">
                             <label>Số Lượng Like:</label>
-
+                            <input type="hidden" id="price" value="20" />
                             <select name="package" id="package" class="form-control" v-on:change="this.$parent.tinhtien">
-                                <option value="15">150 like(Reactions)</option>
-                                <option value="30">300 like(Reactions)</option>
-                                <option value="60">600 like(Reactions)</option>
-                                <option value="100">1.000 like(Reactions)</option>
-                                <option value="150">1.500 like(Reactions)</option>
-                                <option value="200">2.000 like(Reactions)</option>
-                                <option value="250">2.500 like(Reactions)</option>
-                                <option value="300">3.000 like(Reactions)</option>
+                                <option value="500">500 like(Reactions)</option>
+                                <option value="1000">1000 like(Reactions)</option>
+                                <option value="2000">2000 like(Reactions)</option>
                             </select>
                         </div>
                         <div class="form-group">
@@ -36,7 +32,7 @@
                                 <label style="padding: 0 5px;" title="Gói VIP Cảm Xúc ANGRY"><input type="checkbox" name="type[]" style="float: left;" value="ANGRY" /><span id="angry"></span></label>
                             </div>
                         </div>
-                        <div class="form-group">
+                        <!--<div class="form-group">
                             <label>Tốc Độ Like/5 Phút:</label>
                             <select name="solike" id="speed" class="form-control">
                                 <option value="30">30 Like</option>
@@ -45,21 +41,20 @@
                                 <option value="100">100 Like</option>
 
                             </select>
-                        </div>
+                        </div>-->
                         <div class="form-group">
                             <label>Thời Hạn:</label>
                             <select name="time" id="time" class="form-control" v-on:change="this.$parent.tinhtien">
                                 <!--<option value="free">Free Test 1 Day</option>-->
-                                <option value="15">15 Ngày (0.5 Tháng)</option>
-                                <option value="30">30 Ngày (1 Tháng)</option>
-                                <option value="45">45 Ngày (1.5 Tháng)</option>
-                                <option value="60">60 Ngày (2 Tháng)</option>
+                                <option value="10">10 Ngày</option>
+                                <option value="20">20 Ngày</option>
+                                <option value="30">30 Ngày</option>
                             </select>
                         </div>
                         Thành Tiền:
                         <div class="input-group">
                             <span class="input-group-addon">$</span>
-                            <input type="text" disabled="disable" value="15000" class="form-control" id="thanhtien" />
+                            <input type="text" disabled="disable" value="10000" class="form-control" id="thanhtien" />
                             <input type="hidden" disabled="disable" value="like" class="form-control" id="action" />
                             <span class="input-group-addon">VNĐ</span>
                         </div>
@@ -78,17 +73,15 @@
                     <div class="box-body table-responsive no-padding">
                         <table class="table table-hover">
                             <tbody>
-                            <tr>
-                                <th>UID</th>
-                                <th>Gói</th>
-                                <th>Hạn Sử Dụng</th>
-                                <th>Active</th>
+                            <tr style="width: 100%;">
+                                <th style="width: 50%;">UID</th>
+                                <th style="width: 25%;">Gói</th>
+                                <th style="width: 25%;">Hạn Sử Dụng</th>
                             </tr>
                             <tr v-for="list in listVipID.data">
                                 <td>{{list.uid}}</td>
-                                <td>{{list.limit * 10}} Like</td>
+                                <td>{{list.limit}} Like</td>
                                 <td>{{list.time}} Ngày</td>
-                                <td><input type="checkbox" :checked="list.active == 1 ? 'checked':''" /> </td>
                             </tr>
                             </tbody>
                         </table>

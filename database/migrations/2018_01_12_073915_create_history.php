@@ -18,13 +18,14 @@ class CreateHistory extends Migration
 
             $table->string('userid')->default('null')->nullable(false);
             $table->string('postid')->default('null')->nullable(false);
-            $table->string('type')->default('null')->nullable(false);
-            $table->string('status')->default('wait')->nullable(false);
+            $table->string('uid')->default('null')->nullable(false);
+            $table->string('action')->default('null')->nullable(false);
             $table->string('me')->default('0')->nullable(false);
             $table->string('dachay')->default('0')->nullable(false);
             $table->string('tong')->default('0')->nullable(false);
             $table->string('content')->default('null')->nullable(false);
-            $table->string('uid')->default('null')->nullable(false);
+            $table->text('type')->nullable(false);
+            $table->text('comment')->nullable(false);
             $table->timestamps();
         });
     }
@@ -36,6 +37,6 @@ class CreateHistory extends Migration
      */
     public function down()
     {
-        //
+        Schema::dropIfExists('history');
     }
 }

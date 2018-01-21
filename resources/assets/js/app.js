@@ -15,6 +15,7 @@ const routes = [
     { path: '/profile',component: require('./components/profile.vue') },
     { path: '/likefanpage',component: require('./components/likefanpage.vue') },
     { path: '/history',component: require('./components/history.vue') },
+    { path: '/history/:id',component: require('./components/view-history.vue') },
     { path: '/view',component: require('./components/view/view_history.vue') },
     
 ]

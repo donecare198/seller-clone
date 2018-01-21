@@ -13,7 +13,6 @@ class CreateFollow extends Migration
      */
     public function up()
     {
-        //
     }
 
     /**

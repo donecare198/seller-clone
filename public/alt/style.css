@@ -201,3 +201,12 @@ iframe{
     background: url(http://gifimage.net/wp-content/uploads/2017/02/Loading-GIF-Image-18.gif) 50% 50% no-repeat rgb(249,249,249);
     opacity: .8;
 }
+#message_uid{
+    margin-top: 5px;
+}
+#message_uid .error{
+    color:red;
+}
+#message_uid .success{
+    color: #00a65a;
+}

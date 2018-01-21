@@ -22,13 +22,13 @@
                     </router-link>
                 </li>
                 <li>
-                    <router-link to="/history">
-                        <i class="fa fa-hand-o-right"></i> <span>History</span>
+                    <router-link to="/vipcomment">
+                        <i class="fa fa-hand-o-right"></i> <span>Mua Vip Comment</span>
                     </router-link>
                 </li>
                 <li>
-                    <router-link to="/vipcomment">
-                        <i class="fa fa-hand-o-right"></i> <span>Mua Vip Comment</span>
+                    <router-link to="/history">
+                        <i class="fa fa-hand-o-right"></i> <span>History</span>
                     </router-link>
                 </li>
                 <!--

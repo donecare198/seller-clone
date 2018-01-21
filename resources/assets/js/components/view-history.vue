@@ -10,21 +10,11 @@
                         <tbody>
                         <tr>
                             <th>Pots ID </th>
-                            <th>Đã chạy</th>
-                            <th>Tổng</th>
-                            <th>Action</th>
-                            <th>Chi Tiết</th>
+                            <th>Nội Dung</th>
                         </tr>
                         <tr v-for="list in listVipID">
                             <td>{{list.postid}}</td>
-                            <td>{{list.dachay}}</td>
-                            <td>{{list.tong}}</td>
-                            <td>{{list.action}}</td>
-                            <td>
-                                <router-link :to="'/history/'+list.id">
-                                    <i class="fa fa-eye"></i>
-                                </router-link>
-                            </td>
+                            <td>{{list.content}}</td>
                         </tr>
                         </tbody>
                     </table>
@@ -50,7 +40,7 @@ export default {
         }
     },
     mounted() {
-        axios.get('api/history').then((response) => {
+        axios.get('api/history?id='+this.$route.params.id).then((response) => {
             this.listVipID = response.data;
         })
     },

@@ -17,6 +17,7 @@ const routes = [
     { path: '/history',component: require('./components/history.vue') },
     { path: '/history/:id',component: require('./components/view-history.vue') },
     { path: '/view',component: require('./components/view/view_history.vue') },
+    { path: '/billing',component: require('./components/billing.vue') },
     
 ]
 const router = new VueRouter({

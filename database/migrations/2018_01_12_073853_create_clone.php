@@ -30,9 +30,11 @@ class CreateClone extends Migration
             $table->string('photoid')->default('null')->nullable(false);
             $table->TEXT('linksp')->nullable(false);
             $table->string('status')->default('new')->nullable(false);
-
+            $table->string('sex')->default('null')->nullable(false);
+            $table->string('xoaytua')->default('0')->nullable(false);
             $table->timestamps();
         });
+
     }
 
     /**

@@ -210,3 +210,10 @@ iframe{
 #message_uid .success{
     color: #00a65a;
 }
+.modal-backdrop{
+    z-index: 100 !important;
+}
+.modal-dialog {
+    width: 600px;
+    margin: 5% auto !important;
+}

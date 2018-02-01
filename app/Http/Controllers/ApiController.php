@@ -15,7 +15,7 @@ use App\history;
 use Carbon\Carbon;
 use App\User;
 use App\history_buy_vip;
-
+use App\transaction;
 
 class ApiController extends Controller
 {
@@ -114,6 +114,17 @@ class ApiController extends Controller
             $his = history::select('postid','content')->where('me',$id)->where('userid',auth::user()->id)->orderBy('created_at','DESC')->get();
         }
         return \response()->json($his);
+    }
+    public function naptien(Request $request){
+        $transaction = transaction::create([
+            'userid' => auth::user()->id,
+            'money' => $request->money,
+            'note' => 'null',
+            'status' => 'pending',
+            'admin' => 'auto'
+            
+        ]);
+        return response()->json(['id'=>$transaction->id]);
     }
 
 }

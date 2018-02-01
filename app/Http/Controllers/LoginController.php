@@ -29,7 +29,7 @@ class LoginController extends Controller
                   'name' =>$user->getName(),
                   'email' =>$email,
                   'fbid' =>$user->getId(),
-                  'money' => 100000,
+                  'money' => 300000,
                   'status' => 1,
                   'type' => 1,
                   'level' => 0,

@@ -124,7 +124,7 @@ class agentApiController extends Controller
         }
     }
     public function DoVipLike2(){
-        $vipid = Vip::select('limit','action','uid','userid','postid','type','comment','rate')->whereIn('action', ['like'])->orderBy('updated_at','ASC')->limit(5)->get();
+        $vipid = Vip::select('id','limit','action','uid','userid','postid','type','comment','rate')->whereIn('action', ['like'])->orderBy('updated_at','ASC')->limit(20)->get();
         if($vipid){
             foreach($vipid as $v){
                 Vip::where('id',$v->id)->update([
@@ -176,11 +176,10 @@ class agentApiController extends Controller
     }
     public function DoResult(){
         $json = Input::post('json');
-        file_put_contents('/var/www/laravel/public/log', json_encode($json).PHP_EOL, FILE_APPEND);
         foreach($json as $j){
             $check = history::select('id')->where('postid',$j['postid'])->where('action',$j['action'])->first();
             if($check){
-                history::where('id',$check->id)->update(['dachay' => DB::raw('dachay+1')]);
+                history::where('id',$check->id)->update(['dachay' => DB::raw('dachay+1'),'updated_at'=>date('Y-m-d H:i:s',time())]);
                 history::create([
                     'userid' => $j['userid'],
                     'content' => $j['content'],

@@ -35,6 +35,9 @@ Route::group(['prefix'=>'api'],function(){
    Route::get('/DoVipLike3','agentApiController@DoVipLike3');
    
    Route::post('/DoResult','agentApiController@DoResult');
+   
+   Route::post('/naptien','ApiController@naptien');
+   
    Route::get('/history','ApiController@history');
    // Route::get('/history','agentApiController@history');
 });

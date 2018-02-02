@@ -20,6 +20,7 @@ class CreateTransaction extends Migration
             $table->string('note')->default('null')->nullable(false);
             $table->string('status')->default('pendding')->nullable(false);
             $table->string('admin')->default('null')->nullable(false);
+            $table->string('transactionid')->default('null')->nullable(false);
             $table->timestamps();
         });
     }

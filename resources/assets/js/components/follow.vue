@@ -70,13 +70,6 @@ import axios from 'axios'
 export default {
     data() {
         return {
-            posts: [],
-            errors: [],
-            type:[],
-            package: '',
-            uid: '',
-            speed: '',
-            time: '',
             listVipID: [],
         }
     },

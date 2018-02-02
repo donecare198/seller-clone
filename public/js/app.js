@@ -14952,7 +14952,9 @@ var info = [];
             posts: [],
             errors: [],
             info: {},
-            action: ''
+            action: '',
+            code: '',
+            Transaction: []
         };
     },
 
@@ -16270,39 +16272,25 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
-    data: function data() {
-        return {
-            idtransaction: 0
-        };
-    },
-
     methods: {
         addfund: function addfund() {
             var _this = this;
 
             __WEBPACK_IMPORTED_MODULE_0_axios___default.a.post('/api/naptien', {
-                token: $('meta[name="csrf-token"]').attr('content'),
-                money: $('#money_addfund').val()
+                code: this.$parent.code,
+                money: $('#money_billing').val()
             }).then(function (response) {
-                _this.idtransaction = response.data.id;
-            }).catch(function (error) {});
-            $('#infoaddfund').show(500);
+                __WEBPACK_IMPORTED_MODULE_0_axios___default.a.get('/api/getTransaction').then(function (response) {
+                    _this.$parent.Transaction = response.data;
+                });
+                toastr.success('Tạo lệnh nạp tiền thành công');
+                $('#modalfund').modal('hide');
+            }).catch(function (error) {
+                toastr.error('Có lỗi xảy ra. Giao dịch không thành công');
+            });
         }
     }
 
@@ -16371,6 +16359,42 @@ var render = function() {
           _c(
             "li",
             [
+              _c("router-link", { attrs: { to: "/follow" } }, [
+                _c("i", { staticClass: "fa fa-hand-o-right" }),
+                _vm._v(" "),
+                _c("span", [_vm._v("Mua Vip Follow")])
+              ])
+            ],
+            1
+          ),
+          _vm._v(" "),
+          _c(
+            "li",
+            [
+              _c("router-link", { attrs: { to: "/likefanpage" } }, [
+                _c("i", { staticClass: "fa fa-hand-o-right" }),
+                _vm._v(" "),
+                _c("span", [_vm._v("Mua Like Fanpage")])
+              ])
+            ],
+            1
+          ),
+          _vm._v(" "),
+          _c(
+            "li",
+            [
+              _c("router-link", { attrs: { to: "/vipbuff" } }, [
+                _c("i", { staticClass: "fa fa-hand-o-right" }),
+                _vm._v(" "),
+                _c("span", [_vm._v("Vip Buff")])
+              ])
+            ],
+            1
+          ),
+          _vm._v(" "),
+          _c(
+            "li",
+            [
               _c("router-link", { attrs: { to: "/history" } }, [
                 _c("i", { staticClass: "fa fa-hand-o-right" }),
                 _vm._v(" "),
@@ -16404,43 +16428,11 @@ var render = function() {
             _vm._m(0),
             _vm._v(" "),
             _c("div", { staticClass: "modal-body" }, [
-              _c("div", { staticClass: "form-group text-center" }, [
-                _c("div", { staticClass: "input-group" }, [
-                  _vm._m(1),
-                  _vm._v(" "),
-                  _c("input", {
-                    staticClass: "form-control",
-                    attrs: {
-                      type: "number",
-                      id: "money_addfund",
-                      placeholder: "Số tiền muốn nạp",
-                      value: "100000"
-                    }
-                  }),
-                  _vm._v(" "),
-                  _c("span", { staticClass: "input-group-btn" }, [
-                    _c(
-                      "button",
-                      {
-                        staticClass: "btn btn-secondary",
-                        attrs: { type: "button" },
-                        on: { click: _vm.addfund }
-                      },
-                      [_vm._v("Tạo Lệnh Nạp Tiền")]
-                    )
-                  ])
-                ])
-              ]),
-              _vm._v(" "),
               _c(
                 "div",
                 {
-                  staticStyle: {
-                    "font-size": "16px",
-                    "font-weight": "bold",
-                    display: "none"
-                  },
-                  attrs: { id: "infoaddfund" }
+                  staticClass: "form-group",
+                  staticStyle: { "font-size": "16px", "font-weight": "bold" }
                 },
                 [
                   _vm._v(
@@ -16460,11 +16452,31 @@ var render = function() {
                   _c("br"),
                   _vm._v("\n                Nội dung: "),
                   _c("span", { staticClass: "text-danger" }, [
-                    _vm._v("Nap tien viplike_" + _vm._s(this.idtransaction))
+                    _vm._v("Nap tien " + _vm._s(this.$parent.code))
                   ]),
                   _c("br")
                 ]
-              )
+              ),
+              _vm._v(" "),
+              _c("div", { staticClass: "text-center" }, [
+                _c(
+                  "button",
+                  {
+                    staticClass: "btn btn-danger",
+                    attrs: { "data-dismiss": "modal" }
+                  },
+                  [_vm._v("Hủy")]
+                ),
+                _vm._v(" "),
+                _c(
+                  "button",
+                  {
+                    staticClass: "btn btn-success",
+                    on: { click: _vm.addfund }
+                  },
+                  [_vm._v("Đồng Ý")]
+                )
+              ])
             ])
           ])
         ])
@@ -16490,21 +16502,9 @@ var staticRenderFns = [
           [_vm._v("×")]
         ),
         _vm._v(" "),
-        _c("h4", { staticClass: "modal-title" }, [_vm._v("Nạp Tiền")])
+        _c("h4", { staticClass: "modal-title" }, [_vm._v("Xác Nhận Nạp Tiền")])
       ]
     )
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("span", { staticClass: "input-group-btn" }, [
-      _c(
-        "button",
-        { staticClass: "btn btn-secondary", attrs: { type: "button" } },
-        [_vm._v("Đơn Vị(VNĐ)")]
-      )
-    ])
   }
 ]
 render._withStripped = true
@@ -17017,13 +17017,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony default export */ __webpack_exports__["default"] = ({
     data: function data() {
         return {
-            posts: [],
-            errors: [],
-            type: [],
-            package: '',
-            uid: '',
-            speed: '',
-            time: '',
             listVipID: []
         };
     },
@@ -19336,44 +19329,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -19415,87 +19370,44 @@ var render = function() {
           _c("form", { attrs: { action: "", method: "POST" } }, [
             _vm._m(1),
             _vm._v(" "),
-            _c("div", { staticClass: "form-group" }, [
-              _c("label", [_vm._v("Số Lượng Like:")]),
-              _vm._v(" "),
-              _c(
-                "select",
-                {
+            _c(
+              "div",
+              { staticClass: "form-group" },
+              [
+                _c("label", [_vm._v("Số Lượng Follow")]),
+                _vm._v(" "),
+                _c("center", [
+                  _c(
+                    "div",
+                    {
+                      staticClass: "label label-info",
+                      attrs: { align: "center" }
+                    },
+                    [
+                      _vm._v("Follow: "),
+                      _c("span", { attrs: { id: "soluong" } }, [_vm._v("1000")])
+                    ]
+                  )
+                ]),
+                _vm._v(" "),
+                _c("input", {
                   staticClass: "form-control",
-                  attrs: { name: "package", id: "package" },
-                  on: { change: this.$parent.tinhtien }
-                },
-                [
-                  _c("option", { attrs: { value: "15" } }, [
-                    _vm._v("150 like(Reactions)")
-                  ]),
-                  _vm._v(" "),
-                  _c("option", { attrs: { value: "30" } }, [
-                    _vm._v("300 like(Reactions)")
-                  ]),
-                  _vm._v(" "),
-                  _c("option", { attrs: { value: "60" } }, [
-                    _vm._v("600 like(Reactions)")
-                  ]),
-                  _vm._v(" "),
-                  _c("option", { attrs: { value: "100" } }, [
-                    _vm._v("1.000 like(Reactions)")
-                  ]),
-                  _vm._v(" "),
-                  _c("option", { attrs: { value: "150" } }, [
-                    _vm._v("1.500 like(Reactions)")
-                  ]),
-                  _vm._v(" "),
-                  _c("option", { attrs: { value: "200" } }, [
-                    _vm._v("2.000 like(Reactions)")
-                  ]),
-                  _vm._v(" "),
-                  _c("option", { attrs: { value: "250" } }, [
-                    _vm._v("2.500 like(Reactions)")
-                  ]),
-                  _vm._v(" "),
-                  _c("option", { attrs: { value: "300" } }, [
-                    _vm._v("3.000 like(Reactions)")
-                  ])
-                ]
-              )
-            ]),
-            _vm._v(" "),
-            _vm._m(2),
-            _vm._v(" "),
-            _vm._m(3),
-            _vm._v(" "),
-            _c("div", { staticClass: "form-group" }, [
-              _c("label", [_vm._v("Thời Hạn:")]),
-              _vm._v(" "),
-              _c(
-                "select",
-                {
-                  staticClass: "form-control",
-                  attrs: { name: "time", id: "time" },
-                  on: { change: this.$parent.tinhtien }
-                },
-                [
-                  _c("option", { attrs: { value: "15" } }, [
-                    _vm._v("15 Ngày (0.5 Tháng)")
-                  ]),
-                  _vm._v(" "),
-                  _c("option", { attrs: { value: "30" } }, [
-                    _vm._v("30 Ngày (1 Tháng)")
-                  ]),
-                  _vm._v(" "),
-                  _c("option", { attrs: { value: "45" } }, [
-                    _vm._v("45 Ngày (1.5 Tháng)")
-                  ]),
-                  _vm._v(" "),
-                  _c("option", { attrs: { value: "60" } }, [
-                    _vm._v("60 Ngày (2 Tháng)")
-                  ])
-                ]
-              )
-            ]),
+                  attrs: {
+                    type: "range",
+                    name: "package",
+                    min: "1000",
+                    max: "50000",
+                    id: "package",
+                    value: "60",
+                    onchange:
+                      "document.getElementById('soluong').innerHTML=this.value;"
+                  }
+                })
+              ],
+              1
+            ),
             _vm._v("\n                    Thành Tiền:\n                    "),
-            _vm._m(4),
+            _vm._m(2),
             _vm._v(" "),
             _c("br"),
             _vm._v(" "),
@@ -19515,7 +19427,7 @@ var render = function() {
     _vm._v(" "),
     _c("div", { staticClass: "col-lg-6" }, [
       _c("div", { staticClass: "panel panel-default" }, [
-        _vm._m(5),
+        _vm._m(3),
         _vm._v(" "),
         _c("div", { staticClass: "panel-body" }, [
           _c("div", { staticClass: "box-body table-responsive no-padding" }, [
@@ -19523,7 +19435,7 @@ var render = function() {
               _c(
                 "tbody",
                 [
-                  _vm._m(6),
+                  _vm._m(4),
                   _vm._v(" "),
                   _vm._l(_vm.listVipID.data, function(list) {
                     return _c("tr", [
@@ -19583,134 +19495,6 @@ var staticRenderFns = [
           autofocus: ""
         }
       })
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "form-group" }, [
-      _c("label", [_vm._v("Loại cảm xúc:")]),
-      _vm._v(" "),
-      _c("div", { staticClass: "text-center" }, [
-        _c(
-          "label",
-          {
-            staticStyle: { padding: "0 5px" },
-            attrs: { title: "Gói VIP Like" }
-          },
-          [
-            _c("input", {
-              staticStyle: { float: "left" },
-              attrs: {
-                checked: "",
-                type: "checkbox",
-                name: "type[]",
-                value: "LIKE"
-              }
-            }),
-            _vm._v(" "),
-            _c("span", { attrs: { id: "like" } })
-          ]
-        ),
-        _vm._v(" "),
-        _c(
-          "label",
-          {
-            staticStyle: { padding: "0 5px" },
-            attrs: { title: "Gói VIP Cảm Xúc LOVE" }
-          },
-          [
-            _c("input", {
-              staticStyle: { float: "left" },
-              attrs: { type: "checkbox", name: "type[]", value: "LOVE" }
-            }),
-            _c("span", { attrs: { id: "love" } })
-          ]
-        ),
-        _vm._v(" "),
-        _c(
-          "label",
-          {
-            staticStyle: { padding: "0 5px" },
-            attrs: { title: "Gói VIP Cảm Xúc WOW" }
-          },
-          [
-            _c("input", {
-              staticStyle: { float: "left" },
-              attrs: { type: "checkbox", name: "type[]", value: "WOW" }
-            }),
-            _c("span", { attrs: { id: "wow" } })
-          ]
-        ),
-        _vm._v(" "),
-        _c(
-          "label",
-          {
-            staticStyle: { padding: "0 5px" },
-            attrs: { title: "Gói VIP Cảm Xúc HAHA" }
-          },
-          [
-            _c("input", {
-              staticStyle: { float: "left" },
-              attrs: { type: "checkbox", name: "type[]", value: "HAHA" }
-            }),
-            _c("span", { attrs: { id: "haha" } })
-          ]
-        ),
-        _vm._v(" "),
-        _c(
-          "label",
-          {
-            staticStyle: { padding: "0 5px" },
-            attrs: { title: "Gói VIP Cảm Xúc SAD" }
-          },
-          [
-            _c("input", {
-              staticStyle: { float: "left" },
-              attrs: { type: "checkbox", name: "type[]", value: "SAD" }
-            }),
-            _c("span", { attrs: { id: "sad" } })
-          ]
-        ),
-        _vm._v(" "),
-        _c(
-          "label",
-          {
-            staticStyle: { padding: "0 5px" },
-            attrs: { title: "Gói VIP Cảm Xúc ANGRY" }
-          },
-          [
-            _c("input", {
-              staticStyle: { float: "left" },
-              attrs: { type: "checkbox", name: "type[]", value: "ANGRY" }
-            }),
-            _c("span", { attrs: { id: "angry" } })
-          ]
-        )
-      ])
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "form-group" }, [
-      _c("label", [_vm._v("Tốc Độ Like/5 Phút:")]),
-      _vm._v(" "),
-      _c(
-        "select",
-        { staticClass: "form-control", attrs: { name: "solike", id: "speed" } },
-        [
-          _c("option", { attrs: { value: "30" } }, [_vm._v("30 Like")]),
-          _vm._v(" "),
-          _c("option", { attrs: { value: "40" } }, [_vm._v("40 Like")]),
-          _vm._v(" "),
-          _c("option", { attrs: { value: "50" } }, [_vm._v("50 Like")]),
-          _vm._v(" "),
-          _c("option", { attrs: { value: "100" } }, [_vm._v("100 Like")])
-        ]
-      )
     ])
   },
   function() {
@@ -20421,6 +20205,35 @@ module.exports = Component.exports
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_axios__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_axios___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_axios__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -20445,7 +20258,12 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 
+
 /* harmony default export */ __webpack_exports__["default"] = ({
+    data: function data() {
+        return {};
+    },
+
     methods: {
         max_billing: function max_billing() {
             var money = $('#money_billing').val();
@@ -20456,7 +20274,30 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 $('#message_money').html(money.replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1.") + " VNĐ");
                 $('#btnnaptien').prop('disabled', false);
             }
+        },
+        addTransaction: function addTransaction() {
+            var _this = this;
+
+            var money = $('#money_billing').val();
+            if (money < 50000 || money > 300000000) {
+                $('#message_money').html('Số tiền bạn nạp phải từ 50k - 300tr');
+                return false;
+            } else {
+                __WEBPACK_IMPORTED_MODULE_0_axios___default.a.post('/api/addTransaction', { 'money': money }).then(function (response) {
+                    _this.$parent.code = response.data.message;
+                    $('#modalfund').modal('show');
+                }).catch(function (error) {
+                    toastr.error(error.response.data.message);
+                });
+            }
         }
+    },
+    mounted: function mounted() {
+        var _this2 = this;
+
+        __WEBPACK_IMPORTED_MODULE_0_axios___default.a.get('/api/getTransaction').then(function (response) {
+            _this2.$parent.Transaction = response.data;
+        });
     }
 });
 
@@ -20468,7 +20309,7 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div", [
+  return _c("div", { staticStyle: { "margin-top": "15px" } }, [
     _c("div", { staticClass: "col-md-6" }, [
       _c("div", { staticClass: "panel panel-primary" }, [
         _c("div", { staticClass: "panel-heading" }, [_vm._v("Nạp Tiền")]),
@@ -20500,7 +20341,60 @@ var render = function() {
             )
           ]),
           _vm._v(" "),
-          _vm._m(0)
+          _c("div", { staticClass: "form-group text-right" }, [
+            _c(
+              "button",
+              {
+                staticClass: "btn btn-danger",
+                attrs: { id: "btnnaptien" },
+                on: { click: _vm.addTransaction }
+              },
+              [_vm._v("Tiếp Theo")]
+            )
+          ])
+        ])
+      ])
+    ]),
+    _vm._v(" "),
+    _c("div", { staticClass: "col-md-6" }, [
+      _c("div", { staticClass: "panel panel-warning" }, [
+        _c("div", { staticClass: "panel-heading" }, [_vm._v("Lịch Sử")]),
+        _vm._v(" "),
+        _c("div", { staticClass: "panel-body" }, [
+          _c("div", { staticClass: "box-body table-responsive no-padding" }, [
+            _c("table", { staticClass: "table table-hover" }, [
+              _c(
+                "tbody",
+                [
+                  _vm._m(0),
+                  _vm._v(" "),
+                  _vm._l(_vm.$parent.Transaction, function(tran) {
+                    return _c("tr", [
+                      _c("td", [_vm._v(_vm._s(tran.id))]),
+                      _vm._v(" "),
+                      _c("td", [_vm._v(_vm._s(tran.transactionid))]),
+                      _vm._v(" "),
+                      _c("td", [
+                        _vm._v(
+                          _vm._s(
+                            tran.money.replace(
+                              /(\d)(?=(\d{3})+(?!\d))/g,
+                              "$1."
+                            ) + " VNĐ"
+                          )
+                        )
+                      ]),
+                      _vm._v(" "),
+                      _c("td", [_vm._v(_vm._s(tran.status))]),
+                      _vm._v(" "),
+                      _c("td", [_vm._v(_vm._s(tran.created_at))])
+                    ])
+                  })
+                ],
+                2
+              )
+            ])
+          ])
         ])
       ])
     ])
@@ -20511,12 +20405,16 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "form-group text-right" }, [
-      _c(
-        "button",
-        { staticClass: "btn btn-danger", attrs: { id: "btnnaptien" } },
-        [_vm._v("Tiếp Theo")]
-      )
+    return _c("tr", [
+      _c("th", [_vm._v("ID")]),
+      _vm._v(" "),
+      _c("th", [_vm._v("TransactionID")]),
+      _vm._v(" "),
+      _c("th", [_vm._v("Money")]),
+      _vm._v(" "),
+      _c("th", [_vm._v("Status")]),
+      _vm._v(" "),
+      _c("th", [_vm._v("Time Create")])
     ])
   }
 ]

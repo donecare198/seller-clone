@@ -25,10 +25,14 @@ Route::get('/logout','LoginController@logout');
 
 Route::group(['prefix'=>'api'],function(){
    Route::get('/me','ApiController@me');
+   
    Route::post('/install','ApiController@install');
+   
    Route::get('/getViplikeID','ApiController@getViplikeID');
+   
    Route::get('/updateClone','agentApiController@updateClone');
-   Route::get('/DoVipLike','agentApiController@DoVipLike');
+   
+   Route::get('/testSub','agentApiController@testSub');
    
    Route::get('/DoVipLike2','agentApiController@DoVipLike2');
    
@@ -36,10 +40,16 @@ Route::group(['prefix'=>'api'],function(){
    
    Route::post('/DoResult','agentApiController@DoResult');
    
-   Route::post('/naptien','ApiController@naptien');
+   Route::get('/testLikePage','agentApiController@testLikePage');
    
    Route::get('/history','ApiController@history');
-   // Route::get('/history','agentApiController@history');
+   
+   Route::post('/naptien','TransactionController@naptien');
+   
+   Route::post('/addTransaction','TransactionController@addTransaction');
+   
+   Route::get('/getTransaction','TransactionController@getTransaction');
+   
 });
 
 

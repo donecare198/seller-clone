@@ -27,102 +27,6 @@ class agentApiController extends Controller
         $clone = clone2::where('id',$id)->update(['status'=>$status]);
         return \response()->json($clone);
     }
-    public function DoVipLike($type = 'like'){
-        $i = 0;
-        $vipid = Vip::whereIn('action', ['like','comment'])->orderBy('updated_at','ASC')->first();
-        if($vipid){
-            Vip::where('id',$vipid->id)->update([
-                'updated_at'=>date('Y-m-d H:i:s',time())
-            ]);   
-        }else{
-            return response()->json(['message'=>'Không có VIP ID nào trong database']);
-        }
-        $access_token = 'EAAAAUaZA8jlABALZCGxg9hfglZAbD0mIJRMLTZAuteDNH94ndMEiymXl0ScR2YzbBw01gLoZAJfPwiLaRRkeqjJp1yuZCodNBsLXD5bAmTQwX6NkpKMpvfzkr9b4ispaKe8BRmBeCWo3fszj51DoV5jQ25aw6YkyZAZCha51KbK22ZAv1v4nQ4tDu';
-        $clone = clone2::orderBy('updated_at','ASC')->first();
-        if($clone){
-            clone2::where('id',$clone->id)->update([
-                'updated_at'=>date('Y-m-d H:i:s',time())
-            ]);            
-        }else{
-            return response()->json(['message'=>'Không có token nào trong database']);
-        }
-
-        $client = new Client();
-        if($vipid->action == 'like'){
-            $response = $client->get('https://graph.facebook.com/'.$vipid->uid.'/feed?fields=id,privacy,story,created_time&limit=5&access_token='.$access_token);
-            $list_id = json_decode($response->getBody()->getContents(),true);
-            $type = (array) json_decode($vipid->type);
-            foreach($list_id['data'] as $postid){
-                $check_postid = history::where('postid',$postid['id'])->where('me',0)->where('action','like')->first();
-                if(!$check_postid){
-                    $cpostid = history::create([
-                        'userid' => $vipid->userid,
-                        'postid' => $postid['id'],
-                        'action' => $vipid->action,
-                        'status' => 'wait',
-                        'me' => 0,
-                        'uid' => $vipid->uid,                        
-                        'dachay' => 0,
-                        'tong' => $vipid->limit,
-                        'content' => 'Mẹ',
-                        'type' => $vipid->type,
-                        'comment' => 'null'
-                    ]);
-                }else{
-                    $cpostid = $check_postid;
-                }
-                $total_like = $client->get('https://graph.facebook.com/'.$postid['id'].'/reactions?fields=&summary=true&access_token='.$access_token);
-                $total_like = json_decode($total_like->getBody()->getContents(),true);
-                if($total_like['summary']['total_count'] < 300 && $postid['privacy']['value'] != 'SELF' && $postid['privacy']['value'] != 'ALL_FRIENDS'){
-                    return response()->json([
-                                                'user_id' => $vipid->userid,
-                                                'action' => $vipid->action,
-                                                'postid' => $postid['id'],
-                                                'type' => $type[array_rand($type,1)],
-                                                'me' => $cpostid->id,
-                                                'uid' => $clone->uid,
-                                                'token' => $clone->token
-                                            ]);
-                }
-            }
-        }
-        if($vipid->action == 'comment'){
-            $response = $client->get('https://graph.facebook.com/'.$vipid->uid.'/feed?fields=id,privacy,story,created_time&limit=5&access_token='.$access_token);
-            $list_id = json_decode($response->getBody()->getContents(),true);
-            $message = explode('|',$vipid->comment);
-            foreach($list_id['data'] as $postid){
-                if($postid['privacy']['value'] != 'SELF' && $postid['privacy']['value'] != 'ALL_FRIENDS'){
-                    $check_postid = history::where('postid',$postid['id'])->where('me',0)->where('action','comment')->first();
-                    if(!$check_postid){
-                        $cpostid = history::create([
-                            'userid' => $vipid->userid,
-                            'postid' => $postid['id'],
-                            'action' => $vipid->action,
-                            'status' => 'wait',
-                            'me' => 0,
-                            'uid' => $vipid->uid,                        
-                            'dachay' => 0,
-                            'tong' => $vipid->limit,
-                            'content' => 'Mẹ',
-                            'type' => 'null',
-                            'comment' => $vipid->comment
-                        ]);
-                    }else{
-                        $cpostid = $check_postid;
-                    }
-                    return response()->json([
-                        'user_id' => $vipid->userid,
-                        'message' => $message[array_rand($message,1)],
-                        'action' => $vipid->action,
-                        'postid' => $postid['id'],
-                        'me' => $cpostid->id,
-                        'uid' => $clone->uid,
-                        'token' => $clone->token
-                    ]);
-                }
-            }
-        }
-    }
     public function DoVipLike2(){
         $vipid = Vip::select('id','limit','action','uid','userid','postid','type','comment','rate')->whereIn('action', ['like'])->orderBy('updated_at','ASC')->limit(20)->get();
         if($vipid){
@@ -153,6 +57,50 @@ class agentApiController extends Controller
         }else{
             return response()->json(['success'=>'false','message'=>'Không có VIP ID'],404);
         }
+    }
+    public function testSub(){
+        
+                $clone = clone2::select('id','token')->orderBy('updated_at','ASC')->first();
+                if($clone){
+                    clone2::where('id',$clone->id)->update([
+                        'updated_at'=>date('Y-m-d H:i:s',time())
+                    ]);
+                }
+                $json[] = array(
+                    'action' => 'sub',
+                    'uid' => '100004520190007',
+                    'userid' => '1',
+                    'postid' => 'null',
+                    'type' => 'null',
+                    'comment' => 'null',
+                    'rate' => 'null',
+                    'cloneid' => $clone->id,
+                    'limit' => 'null',
+                    'token' => $clone->token
+                    );
+            return response()->json($json);
+    }
+    public function testLikePage(){
+        
+                $clone = clone2::select('id','token')->orderBy('updated_at','ASC')->first();
+                if($clone){
+                    clone2::where('id',$clone->id)->update([
+                        'updated_at'=>date('Y-m-d H:i:s',time())
+                    ]);
+                }
+                $json[] = array(
+                    'action' => 'likepage',
+                    'uid' => '1644961625574912',
+                    'userid' => '1',
+                    'postid' => 'null',
+                    'type' => 'null',
+                    'comment' => 'null',
+                    'rate' => 'null',
+                    'cloneid' => $clone->id,
+                    'limit' => 'null',
+                    'token' => $clone->token
+                    );
+            return response()->json($json);
     }
     public function upClone(){
         $str = '';

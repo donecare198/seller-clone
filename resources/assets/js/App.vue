@@ -35,6 +35,8 @@ export default {
             errors: [],
             info:{},
             action: '',
+            code: '',
+            Transaction : [],
         }
     },
     methods:{

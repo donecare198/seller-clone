@@ -101,7 +101,11 @@ class ApiController extends Controller
             return \response()->json($vipid);
         }
         if($action == 'follow'){
-            $vipid = Vip::select('')->where('userid',auth::user()->id)->where('action',Input::get('action'))->join('follow', 'vip.id', '=', 'follow.vipid')->paginate(10);
+            $vipid = Vip::select('limit','uid','time')->where('userid',auth::user()->id)->where('action',Input::get('action'))->paginate(10);
+            return \response()->json($vipid);
+        }
+        if($action == 'likefanpage'){
+            $vipid = Vip::select('limit','uid','time')->where('userid',auth::user()->id)->where('action',Input::get('action'))->paginate(10);
             return \response()->json($vipid);
         }
     }
@@ -114,17 +118,6 @@ class ApiController extends Controller
             $his = history::select('postid','content')->where('me',$id)->where('userid',auth::user()->id)->orderBy('created_at','DESC')->get();
         }
         return \response()->json($his);
-    }
-    public function naptien(Request $request){
-        $transaction = transaction::create([
-            'userid' => auth::user()->id,
-            'money' => $request->money,
-            'note' => 'null',
-            'status' => 'pending',
-            'admin' => 'auto'
-            
-        ]);
-        return response()->json(['id'=>$transaction->id]);
     }
 
 }

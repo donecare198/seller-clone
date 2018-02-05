@@ -122,9 +122,6 @@ export default {
         axios.get('api/me').then((response) => {
             this.info = response.data;
         })
-        axios.get('api/loadConfig').then((response) => {
-            this.config = response.data;
-        })
     },
 }
 </script>

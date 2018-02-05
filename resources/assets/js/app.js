@@ -6,18 +6,6 @@ Vue.use(VueRouter)
 
 const routes = [
     { path: '/',component: require('./components/home.vue') },
-    { path: '/_=_',component: require('./components/home.vue') },
-    { path: '/follow',component: require('./components/follow.vue') },
-    { path: '/viplike',component: require('./components/viplike.vue') },
-    { path: '/vipcomment',component: require('./components/vipcomment.vue') },
-    { path: '/vipshare',component: require('./components/vipshare.vue') },
-    { path: '/review',component: require('./components/review.vue') },
-    { path: '/profile',component: require('./components/profile.vue') },
-    { path: '/likefanpage',component: require('./components/likefanpage.vue') },
-    { path: '/history',component: require('./components/history.vue') },
-    { path: '/history/:id',component: require('./components/view-history.vue') },
-    { path: '/view',component: require('./components/view/view_history.vue') },
-    { path: '/billing',component: require('./components/billing.vue') },
     
 ]
 const router = new VueRouter({

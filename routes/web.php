@@ -26,6 +26,8 @@ Route::get('/logout','LoginController@logout');
 Route::group(['prefix'=>'api'],function(){
    Route::get('/me','ApiController@me');
    
+   Route::get('/loadConfig','ApiController@loadConfig');
+   
    Route::post('/install','ApiController@install');
    
    Route::get('/getViplikeID','ApiController@getViplikeID');

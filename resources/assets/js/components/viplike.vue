@@ -74,11 +74,13 @@
                         <table class="table table-hover">
                             <tbody>
                             <tr style="width: 100%;">
-                                <th style="width: 50%;">UID</th>
+                                <th>STT</th>
+                                <th style="width: 45%;">UID</th>
                                 <th style="width: 25%;">Gói</th>
                                 <th style="width: 25%;">Hạn Sử Dụng</th>
                             </tr>
-                            <tr v-for="list in listVipID.data">
+                            <tr v-for="(list,key) in listVipID.data">
+                                <td>{{key + 1}}</td>
                                 <td>{{list.uid}}</td>
                                 <td>{{list.limit}} Like</td>
                                 <td>{{list.time}} Ngày</td>
@@ -88,11 +90,22 @@
                     </div>
                 </div>
             </div>
+        <pagination 
+                  :total="total" 
+                  :per_page= "per_page" 
+                  :current_page= "current_page" 
+                  :last_page= "last_page" 
+                  :next_page_url= "next_page_url" 
+                  :prev_page_url= "prev_page_url" 
+                  :from= "from" 
+                  :to= "to" 
+                ></pagination>
         </div>
     </div>
 </template>
 <script>
 import axios from 'axios'
+import pagination from './pagination.vue'
 export default {
     data() {
         return {
@@ -104,11 +117,56 @@ export default {
             speed: '',
             time: '',
             listVipID: [],
+            n:0,
+            users: [],
+            message:'Welcome',
+            total: 0,
+            per_page: 0,
+            current_page: 0,
+            last_page: 0,
+            next_page_url: "",
+            prev_page_url: "",
+            from: 0,
+            to: 0,
+            q:""
         }
+    },
+    components: {
+        pagination,
+    },
+    methods:{
+        toPage(n){
+            let $this = this;
+            axios.get('/api/getViplikeID?action=like&page='+n)
+            .then(function (response){
+                $this.users = response.data.data
+                $this.total = response.data.total
+                $this.per_page = response.data.per_page
+                $this.current_page = response.data.current_page
+                $this.last_page = response.data.last_page
+                $this.next_page_url = response.data.next_page_url
+                $this.prev_page_url = response.data.prev_page_url
+                $this.from = response.data.from
+                $this.to = response.data.to
+                $this.listVipID = response.data;
+              })
+              .catch(function (error) {
+                console.log(error);
+              });
+          }
     },
     mounted() {
         axios.get('api/getViplikeID?action=like').then((response) => {
             this.listVipID = response.data;
+            this.users = response.data.data
+            this.total = response.data.total
+            this.per_page = response.data.per_page
+            this.current_page = response.data.current_page
+            this.last_page = response.data.last_page
+            this.next_page_url = response.data.next_page_url
+            this.prev_page_url = response.data.prev_page_url
+            this.from = response.data.from
+            this.to = response.data.to
         })
     },
 }

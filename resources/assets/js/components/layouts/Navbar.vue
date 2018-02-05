@@ -3,9 +3,9 @@
         <!-- Logo -->
     <router-link to="/" class="logo">
         <!-- mini logo for sidebar mini 50x50 pixels -->
-        <span class="logo-mini"><b>LP</b>V</span>
+        <span class="logo-mini"><b>{{this.$parent.config[1].value}}</b></span>
         <!-- logo for regular state and mobile devices -->
-        <span class="logo-lg"><b>LikePro</b>.VIP</span>
+        <span class="logo-lg"><b>{{this.$parent.config[0].value}}</b></span>
     </router-link>
     <!-- Header Navbar -->
     <nav class="navbar navbar-static-top" role="navigation">

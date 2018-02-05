@@ -10,8 +10,8 @@ use App\transaction;
 class TransactionController extends Controller
 {
     public function RandomID(){
-        $characters = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-        $randstring = '';
+        $characters = '0123456789';
+        $randstring = 'VIP';
         for ($i = 0; $i < 12; $i++) {
             $randstring .= $characters[rand(0, strlen($characters) - 1)];
         }

@@ -14,6 +14,7 @@ use App\Review;
 use App\history;
 use Carbon\Carbon;
 use App\User;
+use App\Config;
 use App\history_buy_vip;
 use App\transaction;
 
@@ -118,6 +119,10 @@ class ApiController extends Controller
             $his = history::select('postid','content')->where('me',$id)->where('userid',auth::user()->id)->orderBy('created_at','DESC')->get();
         }
         return \response()->json($his);
+    }
+    public function loadConfig(){
+        $config = Config::select(['key','value','link'])->get();
+        return $config;
     }
 
 }

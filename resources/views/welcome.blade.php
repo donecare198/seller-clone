@@ -28,7 +28,7 @@
             <div class="pace-progress-inner"></div>
         </div>
         <div class="pace-activity"></div></div>
-        <div id="app">
+        <div id="app" class="col-md-12">
             <router-view></router-view>
         </div>
     </body>

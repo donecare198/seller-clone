@@ -71,14 +71,14 @@
               <div class="modal-content">
                 <div class="modal-header" style="text-align: center;">
                   <button type="button" class="close" data-dismiss="modal">&times;</button>
-                  <h4 class="modal-title">Xác Nhận Nạp Tiền</h4>
+                  <h4 class="modal-title" style="font-weight: bold;font-size: 30px;color: red;">Xác Nhận Nạp Tiền</h4>
                 </div>
                 <div class="modal-body">
                   <div class="form-group" style="font-size: 16px;font-weight: bold;">
                     Để hoàn thành việc nạp tiền vào hệ thống, bạn cần chuyển tiền đến tài khoản .<br /> 
-                    Chủ tài khoản: <span class="text-danger">xxxx</span> <br />
-                    Số tài khoản: <span class="text-danger">xxxx</span> <br />
-                    Ngân hàng <span class="text-danger">xxxx</span><br />
+                    Chủ tài khoản: <span class="text-danger">{{this.$parent.config[4].value}}</span> <br />
+                    Số tài khoản: <span class="text-danger">{{this.$parent.config[5].value}}</span> <br />
+                    Ngân hàng <span class="text-danger">{{this.$parent.config[6].value}}</span><br />
                     Nội dung: <span class="text-danger">Nap tien {{this.$parent.code}}</span><br />
                   </div>
                   <div class="text-center">

@@ -24,6 +24,21 @@ Route::get('/callback','LoginController@callback');
 Route::get('/logout','LoginController@logout');
 
 Route::group(['prefix'=>'api'],function(){
+   
+   Route::post('/trashClone', 'ApiController@trashClone');
+   
+   Route::get('/historyBuy', 'ApiController@historyBuy');
+   
+   Route::post('/buyClone', 'ApiController@buyClone');
+   
+   Route::get('/infoSystem', 'ApiController@infoSystem');
+   
+   Route::get('/downloadClone/{id}', 'ApiController@downloadClone');
+   
+   Route::get('/clone', 'ApiController@viewClone');
+   
+   Route::get('/clone/{st}', 'ApiController@viewClone');
+    
    Route::get('/me','ApiController@me');
    
    Route::get('/loadConfig','ApiController@loadConfig');

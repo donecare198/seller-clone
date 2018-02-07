@@ -11,7 +11,7 @@ class TransactionController extends Controller
 {
     public function RandomID(){
         $characters = '0123456789';
-        $randstring = 'VIP';
+        $randstring = 'BCL';
         for ($i = 0; $i < 12; $i++) {
             $randstring .= $characters[rand(0, strlen($characters) - 1)];
         }

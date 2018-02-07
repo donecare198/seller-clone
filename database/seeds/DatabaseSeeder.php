@@ -49,6 +49,11 @@ class DatabaseSeeder extends Seeder
         		'value'=>'hhhh',
         		'link'=>'null'
         	],
+        	[
+        		'key'=>'clone',
+        		'value'=>'1000',
+        		'link'=>'null'
+        	],
         ];
         DB::table('config')->insert($data);
     }

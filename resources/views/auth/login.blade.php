@@ -101,7 +101,7 @@
 <body class="hold-transition login-page">
 <div class="login-box">
     <div class="login-logo">
-        <a href="/"><b>Likepro</b></a>
+        <a href="/"><b>FB666</b></a>
     </div>
     <!-- /.login-logo -->
     <div class="login-box-body">

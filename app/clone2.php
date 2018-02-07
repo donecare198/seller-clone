@@ -25,5 +25,8 @@ class clone2 extends Model
         'linksp',
         'created_at',
         'updated_at',
+        'daban',
+        'userid',
+        'buyid'
     ];
 }

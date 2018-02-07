@@ -5,18 +5,13 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use App\Viplike;
-use App\Vipcomment;
-use App\Vip;
-use App\Share;
-use App\Follow;
-use App\Review;
-use App\history;
+use Excel;
+use Illuminate\Filesystem\Filesystem;
+use App\clone2;
 use Carbon\Carbon;
 use App\User;
+use App\buyclone;
 use App\Config;
-use App\history_buy_vip;
-use App\transaction;
 
 class ApiController extends Controller
 {
@@ -36,93 +31,100 @@ class ApiController extends Controller
             'access_token'=>auth::user()->access_token
         ],200);
     }
-    public function install(Request $request){
-        $tinhtien = $request->package * $request->price * ($request->time / 10);
-        if(auth::user()->money < $tinhtien){
-            return \response()->json(['success'=>'false','message'=>'Bạn không đủ tiền để thanh toán!'],200);
-        }
-        $check = Vip::where('uid',$request->uid)->where('action',$request->action)->first();
-
-        if($check){
-            return \response()->json(['success'=>'false','message'=>'UID đã tồn tại'],200);
-        }
-        if($request->time == ''){
-            $time = '';
-        }else{
-            $time = $request->time;
-        }
-        $create = Vip::create([
-                    'userid' => auth::user()->id != '' ? auth::user()->id : '',
-                    'uid' => $request->uid != '' ? $request->uid : '',
-                    'postid' => $request->postid != '' ? $request->uid : '',
-                    'price' => $tinhtien ,
-                    'action' => $request->action,
-                    'type' => json_encode($request->type),
-                    'comment' => $request->comment != '' ? $request->comment : '',
-                    'limit' => $request->package,
-                    'time' => $request->time != '' ? $request->time : '',
-                    'rate' => $request->rate != '' ? $request->rate : '0',
-                ]);
-
-        if($create){
-            User::where('id',auth::user()->id)->update(['money'=>auth::user()->money - $tinhtien]);
-            history_buy_vip::create([
-                'userid' => auth::user()->id,
-                'money' => $tinhtien,
-                'vipid' => $create->id,
-                'time' => $request->time != '' ? $request->time : ''
-            ]);
-            return response()->json([
-                'success' => 'true',
-                'message' => 'Chúc mừng bạn đã thanh toán thành công!'
-            ]);
-        }else{
-            return response()->json([
-                'success' => 'false',
-                'message' => 'Có lỗi xảy ra. Thanh toán không thành công!'
-            ]);
-        }
-    }
-    public function getViplikeID(){
-        $action = Input::get('action');
-        if($action == 'like'){
-            $vipid = Vip::select('limit','uid','time')->where('userid',auth::user()->id)->where('action',Input::get('action'))->paginate(10);
-            return \response()->json($vipid);
-        }
-        if($action == 'comment'){
-            $vipid = Vip::select('limit','uid','time')->where('userid',auth::user()->id)->where('action',Input::get('action'))->paginate(10);
-            return \response()->json($vipid);
-        }
-        if($action == 'share'){
-            $vipid = Vip::select('')->where('userid',auth::user()->id)->where('action',Input::get('action'))->join('vipshare', 'vip.id', '=', 'vipshare.vipid')->paginate(10);
-            return \response()->json($vipid);
-        }
-        if($action == 'review'){
-            $vipid = Vip::select('')->where('userid',auth::user()->id)->where('action',Input::get('action'))->join('review', 'vip.id', '=', 'review.vipid')->paginate(10);
-            return \response()->json($vipid);
-        }
-        if($action == 'follow'){
-            $vipid = Vip::select('limit','uid','time')->where('userid',auth::user()->id)->where('action',Input::get('action'))->paginate(10);
-            return \response()->json($vipid);
-        }
-        if($action == 'likefanpage'){
-            $vipid = Vip::select('limit','uid','time')->where('userid',auth::user()->id)->where('action',Input::get('action'))->paginate(10);
-            return \response()->json($vipid);
-        }
-    }
-    
-    public function history(){
-        $id = Input::get('id');
-        if(!$id){
-            $his = history::where('me','0')->where('userid',auth::user()->id)->orderBy('created_at','DESC')->get();
-        }else{
-            $his = history::select('postid','content')->where('me',$id)->where('userid',auth::user()->id)->orderBy('created_at','DESC')->get();
-        }
-        return \response()->json($his);
-    }
     public function loadConfig(){
         $config = Config::select(['key','value','link'])->get();
         return $config;
     }
-
+    public function viewClone($st = '')
+    {
+        if($st == ''){
+            $clone = clone2::where('status','!=','trash')->where('userid',auth::user()->id)->paginate(20);   
+        }else{
+            $clone = clone2::where('status',$st)->orderBy('updated_at','ASC')->paginate(20);
+            
+        }
+        $status = clone2::select('status')->distinct()->get();
+        $array = ['clone'=>$clone,'status'=>$status];
+        return $array;
+    }
+    public function viewTrash($st = 'trash')
+    {
+        if($st == ''){
+            $clone = clone2::where('userid',auth::user()->id)->paginate(20);   
+        }else{
+            $clone = clone2::where('status',$st)->orderBy('updated_at','ASC')->paginate(20);
+            
+        }
+        $status = clone2::select('status')->distinct()->get();
+        $array = ['clone'=>$clone,'status'=>$status];
+        return $array;
+    }
+    public function infoSystem(){
+        $coutClone = clone2::count();
+        $coutUser = User::count();
+        $daban = clone2::where('daban','=','1')->count();
+        $chuaban = clone2::where('daban','=','0')->count();
+        return response()->json(['countClone'=>$coutClone,'daban'=>$daban,'chuaban'=>$chuaban,'countUser'=>$coutUser]);
+    }
+    public function buyClone(Request $request){
+        $config = Config::select(['value'])->where('key','clone')->first();
+        $chuaban = clone2::where('daban','=','0')->count();
+        $loai = $request->loai;
+        $soluong = $request->soluong;
+        if($soluong*$config->value > auth::user()->money){
+            return response()->json(['message'=>'Số tiền trong tài khoản không đủ để thanh toán'],404);
+        }
+        if($chuaban < $soluong){
+            return response()->json(['message'=>'Không đủ clone trong hệ thống'],404);
+        }
+        $data2 = ['soluong'=>$soluong,
+                 'loai'=>$loai,
+                 'giatien'=>$soluong*$config->value,
+                 'userid'=>auth::user()->id];
+        $buy = buyclone::create($data2);
+        if($buy){
+            User::where('id',auth::user()->id)->update(['money'=>auth::user()->money - $soluong*$config->value]);
+        }
+        $clone = clone2::where('status','!=','new')->where('userid','0')->limit($soluong)->orderBy('id','DESC')->lockForUpdate()->get();
+        foreach($clone as $cl){
+            clone2::where('id',$cl->id)->update(['daban'=>'1','userid'=>auth::user()->id,'buyid'=>$buy->id,'updated_at'=>date('Y-m-d H:i:s',time())]);
+            $data[] = array($cl->uid,$cl->email,$cl->password,$cl->cookie,$cl->token,$cl->birthday,$cl->lastname,$cl->firstname,$cl->sex);
+        }
+        /****************/
+        Excel::create('MuaClone_'.$buy->id, function($excel) use($data) {
+            $excel->sheet('Sheetname', function($sheet) use($data) {
+                $sheet->fromArray($data);
+            });
+        })->store('xls',storage_path('../excel/'.date('Y-m-d',time())));
+        
+        return response()->json(['message'=>'Thanh toán thành công']);
+    }
+    public function downloadClone($id){
+        $history = buyclone::select(['userid','created_at'])->where('id',$id)->first();
+        if($history->userid != auth::user()->id){
+            return response()->json('Bạn không có quyền truy cập vào file này');
+        }
+        $file = '../excel/'.date('Y-m-d',strtotime($history->created_at)).'/MuaClone_'.$id.'.xls';
+        header('Content-Description: File Transfer');
+        header('Content-Type: application/octet-stream');
+        header('Content-Disposition: attachment; filename="'.basename($file).'"');
+        header('Expires: 0');
+        header('Cache-Control: must-revalidate');
+        header('Pragma: public');
+        header('Content-Length: ' . filesize($file));
+        readfile($file);
+    }
+    public function historyBuy(){
+        $history = buyclone::where('userid',auth::user()->id)->orderBy('id','DESC')->paginate(10);
+        return $history;
+    }
+    public function trashClone(Request $request){
+        $id = $request->id;
+        foreach($id as $i){
+            $check = clone2::select(['id','userid'])->where('id',$i)->first();
+            if($check->userid == auth::user()->id){
+                clone2::where('id',$check->id)->update(['status'=>'trash']);
+            }
+        }
+    }
 }

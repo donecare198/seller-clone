@@ -217,3 +217,12 @@ iframe{
     width: 600px;
     margin: 5% auto !important;
 }
+.pagination{
+    margin: 0px;
+}
+.table>tbody>tr>td, .table>tbody>tr>th, .table>tfoot>tr>td, .table>tfoot>tr>th, .table>thead>tr>td, .table>thead>tr>th {
+    padding: 8px 8px 0px 8px;
+    line-height: 1.42857143;
+    vertical-align: top;
+    border-top: 1px solid #ddd;
+}

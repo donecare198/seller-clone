@@ -4,7 +4,7 @@
         <Sidebar></Sidebar>
         <!-- Content Wrapper. Contains page content noidung-->
         <div class="content-wrapper">
-            <div class="" style="float: left;width: 100%;margin-bottom: 35px;">
+            <div class="" style="float: left;width: 100%;background-color: #ecf0f5;">
                 <div id="hihi" class="col-md-12" style="margin-top: 15px;">
                     <router-view>
                     </router-view>
@@ -121,6 +121,9 @@ export default {
     mounted() {
         axios.get('api/me').then((response) => {
             this.info = response.data;
+        })
+        axios.get('api/loadConfig').then((response) => {
+            this.config = response.data;
         })
     },
 }

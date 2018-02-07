@@ -85,9 +85,9 @@ class ApiController extends Controller
         if($buy){
             User::where('id',auth::user()->id)->update(['money'=>auth::user()->money - $soluong*$config->value]);
         }
-        $clone = clone2::where('status','!=','new')->where('userid','0')->limit($soluong)->orderBy('id','DESC')->lockForUpdate()->get();
+        $clone = clone2::where('userid','0')->limit($soluong)->orderBy('id','DESC')->lockForUpdate()->get();
         foreach($clone as $cl){
-            clone2::where('id',$cl->id)->update(['daban'=>'1','userid'=>auth::user()->id,'buyid'=>$buy->id,'updated_at'=>date('Y-m-d H:i:s',time())]);
+            clone2::where('id',$cl->id)->update(['daban'=>'1','userid'=>auth::user()->id,'updated_at'=>date('Y-m-d H:i:s',time())]);
             $data[] = array($cl->uid,$cl->email,$cl->password,$cl->cookie,$cl->token,$cl->birthday,$cl->lastname,$cl->firstname,$cl->sex);
         }
         /****************/

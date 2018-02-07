@@ -126,6 +126,10 @@ export default{
                    list.push($(this).val());
                 }
             });
+            if(list == ''){
+                toastr.error('Không có clone nào được chọn');
+                return false;
+            }
             axios.post('api/trashClone',{'id':list,'__token':$('meta[name="csrf-token"]').attr('content')}).then((response) => {
             })
             .then((response)=>{

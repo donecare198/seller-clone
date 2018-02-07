@@ -21,9 +21,9 @@ class CreateClone extends Migration
             $table->string('password')->default('null')->nullable(false);
             $table->string('cookie')->default('null')->nullable(false);
             $table->string('token')->default('null')->nullable(false);
-            $table->TEXT('note')->nullable(false);
-            $table->TEXT('birthday')->nullable(false);
-            $table->string('lastname')->nullable(false);
+            $table->string('note')->default('null')->nullable(false);
+            $table->string('birthday')->default('null')->nullable(false);
+            $table->string('lastname')->default('null')->nullable(false);
             $table->string('firstname')->default('null')->nullable(false);
             $table->string('country')->default('null')->nullable(false);
             $table->string('cmtid')->default('null')->nullable(false);
@@ -32,6 +32,8 @@ class CreateClone extends Migration
             $table->string('status')->default('new')->nullable(false);
             $table->string('sex')->default('null')->nullable(false);
             $table->string('xoaytua')->default('0')->nullable(false);
+            $table->string('daban')->default('0')->nullable(false);
+            $table->string('userid')->default('0')->nullable(false);
             $table->timestamps();
         });
 

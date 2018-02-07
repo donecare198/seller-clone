@@ -84,7 +84,7 @@
                             <input type="text" disabled="" :value="(100 * this.$parent.config[7].value).toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1.') + ' VNĐ'" id="thanhtien" class="form-control" />
                         </div>
                         <div class="form-group text-center">
-                            <button class="btn btn-danger" v-on:click="buyClone">Mua Clone</button>
+                            <button id="btn-buy" class="btn btn-danger" v-on:click="buyClone">Mua Clone</button>
                         </div>
                     </div>
                 </div>
@@ -103,10 +103,10 @@
                     <tr v-for="(his,index) in historyBuy.data">
                         <td>{{index + 1}}</td>
                         <td>{{his.loai}}</td>
-                        <td>{{his.giatien.replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1.")}} VNĐ</td>
+                        <td>{{his.giatien.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1.")}} VNĐ</td>
                         <td>{{his.soluong}}</td>
                         <td>{{his.created_at}}</td>
-                        <td><a :href="'http://fb666.net/api/downloadClone/'+his.id" target="_blank"><i class="fa fa-download"></i></a></td>
+                        <td><a :href="'/api/downloadClone/'+his.id" target="_blank"><i class="fa fa-download"></i></a></td>
                     </tr>
                 </tbody>
                 </table>
@@ -153,8 +153,12 @@ export default{
             var soluong = $('#soluong').val();
             if(soluong < 100){
                 toastr.error('Bạn chỉ cần mua tối thiểu 100 Clone');
+                $('#btn-buy').prop('disabled',true);
             }else if(soluong > this.infoSystem.chuaban){
                 toastr.error('Bạn chỉ có thể mua tối đa '+this.infoSystem.chuaban+' Clone');
+                $('#btn-buy').prop('disabled',true);
+            }else{
+                $('#btn-buy').prop('disabled',false);
             }
         },
         tinhtien(){

@@ -54,6 +54,11 @@ class DatabaseSeeder extends Seeder
         		'value'=>'1000',
         		'link'=>'null'
         	],
+        	[
+        		'key'=>'title',
+        		'value'=>'Dịch Vụ Facebook',
+        		'link'=>'null'
+        	],
         ];
         DB::table('config')->insert($data);
     }
